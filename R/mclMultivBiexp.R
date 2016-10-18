@@ -53,7 +53,7 @@ mclMultivBiexp<-function(lambda,y)
 #    f<-0
 #    w<-w;
 #    xt<-apply(as.matrix(y),2,function(x)x+abs(min(x,0))+.Machine$double.eps)
-#    xt<-.Call("flowCore_biexponential_transform",y,a,b,c,d,f,w,.Machine$double.eps^0.25,5000,PACKAGE="flowCore");
+#    xt <- apply_biexp_trans(y, a, b, c, d, f, w)
 #    ll<-log(det(cov(xt)))-sum(2*apply(log(abs(1/eval(D(expression(a*exp(b*(xt-w))-c*exp(-d*(xt-w))+f),"xt")))),1,sum)/dim(xt)[1])
 #    return(ll);   
 #
@@ -63,7 +63,7 @@ mclMultivBiexpW<-function(lambda,y,a,c,b,d)
     w<-lambda[1];
     f<-0;
     xt<-apply(as.matrix(y),2,function(x)x+abs(min(x,0))+.Machine$double.eps)
-    xt<-.Call("flowCore_biexponential_transform",y,a,b,c,d,f,w,.Machine$double.eps^0.25,5000,PACKAGE="flowCore");
+    xt <- apply_biexp_trans(y, a, b, c, d, f, w)
     ll<-log(det(cov(xt)))-sum(2*apply(log(abs(1/eval(D(expression(a*exp(b*(xt-w))-c*exp(-d*(xt-w))+f),"xt")))),1,sum)/dim(xt)[1])
     return(ll);   
 }
@@ -74,17 +74,18 @@ mclMultivBiexpW<-function(lambda,y,a,c,b,d)
 #    f<-0
 #    w<-w;
 #    xt<-apply(as.matrix(y),2,function(x)x+abs(min(x,0))+.Machine$double.eps)
-#    xt<-.Call("flowCore_biexponential_transform",y,a,b,c,d,f,w,.Machine$double.eps^0.25,5000,PACKAGE="flowCore");
+#    xt <- apply_biexp_trans(y, a, b, c, d, f, w)
 #    ll<-log(det(cov(xt)))-sum(2*apply(log(abs(1/eval(D(expression(a*exp(b*(xt-w))-c*exp(-d*(xt-w))+f),"xt")))),1,sum)/dim(xt)[1])
 #    return(ll);   
 #}
+
+
  mclMultivBiexpAB<-function(lambda,y,c,d,w){
 a<-lambda[1]
 b<-lambda[2]
 f<-0
 w<-w
-xt <- .Call("flowCore_biexponential_transform", y, a, b, c, d, f, 
-        w, .Machine$double.eps^0.25, 5000,PACKAGE="flowCore")
+xt <- apply_biexp_trans(y, a, b, c, d, f, w)
 ll <- log(det(cov(xt))) - sum(2 * apply(log(abs(1/eval(D(expression(a * 
         exp(b * (xt - w)) - c * exp(-d * (xt - w)) + f), "xt")))), 
         1, sum)/dim(xt)[1])
@@ -94,10 +95,13 @@ mclMultivBiexpCD<-function(lambda,y,a,b,w){
 f<-0
 c<-lambda[1]
 d<-lambda[2]
-xt <- .Call("flowCore_biexponential_transform", y, a, b, c, d, f, 
-        w, .Machine$double.eps^0.25, 5000,PACKAGE="flowCore")
+xt <- apply_biexp_trans(y, a, b, c, d, f, w)
     ll <- log(det(cov(xt))) - sum(2 * apply(log(abs(1/eval(D(expression(a * 
         exp(b * (xt - w)) - c * exp(-d * (xt - w)) + f), "xt")))), 
         1, sum)/dim(xt)[1])
     return(ll)
+}
+
+apply_biexp_trans <- function(y, a, b, c, d, f, w){
+  apply(y, 2, function(i)flowCore:::biexponential_transform(i, a, b, c, d, f, w, .Machine$double.eps^0.25, 5000))
 }
