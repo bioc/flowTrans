@@ -14,7 +14,7 @@ mclMultivBiexp<-function(lambda,y)
    while((convergence==1)&(iter!=0)){
     repeat{
         p.ab<-try(optim(par=p.ab,mclMultivBiexpAB,y=y,c=p.cd[1],d=p.cd[2],w=p.w,method="L-BFGS-B",control=list(factr=1,pgtol=1e-8,maxit=10000),lower=c(1e-6,1e-6),upper=c(1,Inf)),silent=F)
-        if(!inherits(p.bd,"try-error")){
+        if(!inherits(p.ab,"try-error")){
             break;
         }else{
             p.ab<-runif(2,0,1);
