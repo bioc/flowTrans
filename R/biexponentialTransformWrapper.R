@@ -7,7 +7,7 @@ biexponentialTransformWrapper<-function(transformationId,pars=pars){
         d<-pars[4]
         w<-pars[6]
         f<-pars[5]
-        x<-.Call("flowCore_biexponential_transform",x,a=a,b=b,c=c,d=d,f=f,w=w,tol=.Machine$double.eps^0.25,maxit=as.integer(5000),PACKAGE="flowCore")
+        x<-.Call("_flowCore_biexponential_transform",x,a=a,b=b,c=c,d=d,f=f,w=w,tol=.Machine$double.eps^0.25,maxit=as.integer(5000),PACKAGE="flowCore")
     });
     t@transformationId=transformationId;
     t   
